@@ -52,9 +52,3 @@ src\core\WMath.cpp
 
 src\core\WString.cpp
 
-src\libraries\AccelStepper\AccelStepper.cpp
-
-src\libraries\AccelStepper\MultiStepper.cpp
-
-src\libraries\EnableInterrupt-master\examples\SimpleWithLibrary\Useless.cpp
-

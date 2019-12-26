@@ -37,9 +37,11 @@ Sketch.d Sketch.o: .././Sketch.cpp \
  .././ADC_Configuration.h .././Step_Output_Configuration.h \
  .././Serial_Processing.h .././HardwareTypes.h .././Serial_Commands.h \
  .././Device_Configuration.h .././Math_Helpers.h .././Globals.h \
+ .././EEPROM_Storage.h \
  ../../ArduinoCore/include/libraries/EnableInterrupt-master/EnableInterrupt.h \
  ../../ArduinoCore/include/libraries/EnableInterrupt-master/utility/ei_PinChange328.h \
- ../../ArduinoCore/include/libraries/EnableInterrupt-master/utility/ei_External328.h
+ ../../ArduinoCore/include/libraries/EnableInterrupt-master/utility/ei_External328.h \
+ ../../ArduinoCore/include/libraries/EEPROM/src/EEPROM.h
 
 ..\\..\ArduinoCore\include\core/Arduino.h:
 
@@ -127,8 +129,12 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 .././Globals.h:
 
+.././EEPROM_Storage.h:
+
 ../../ArduinoCore/include/libraries/EnableInterrupt-master/EnableInterrupt.h:
 
 ../../ArduinoCore/include/libraries/EnableInterrupt-master/utility/ei_PinChange328.h:
 
 ../../ArduinoCore/include/libraries/EnableInterrupt-master/utility/ei_External328.h:
+
+../../ArduinoCore/include/libraries/EEPROM/src/EEPROM.h:

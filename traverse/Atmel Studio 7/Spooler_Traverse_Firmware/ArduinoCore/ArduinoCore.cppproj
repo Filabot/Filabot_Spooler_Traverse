@@ -73,6 +73,7 @@
       <Value>..\include\libraries\EnableInterrupt-master</Value>
       <Value>..\include\libraries\EnableInterrupt-master\examples\SimpleWithLibrary</Value>
       <Value>..\include\libraries\EnableInterrupt-master\utility</Value>
+      <Value>..\include\libraries\EEPROM\src</Value>
     </ListValues>
   </avrgcc.compiler.directories.IncludePaths>
   <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
@@ -103,6 +104,7 @@
       <Value>..\include\libraries\EnableInterrupt-master</Value>
       <Value>..\include\libraries\EnableInterrupt-master\examples\SimpleWithLibrary</Value>
       <Value>..\include\libraries\EnableInterrupt-master\utility</Value>
+      <Value>..\include\libraries\EEPROM\src</Value>
     </ListValues>
   </avrgcccpp.compiler.directories.IncludePaths>
   <avrgcccpp.compiler.optimization.level>Optimize for size (-Os)</avrgcccpp.compiler.optimization.level>
@@ -157,6 +159,7 @@
       <Value>..\include\libraries\EnableInterrupt-master</Value>
       <Value>..\include\libraries\EnableInterrupt-master\examples\SimpleWithLibrary</Value>
       <Value>..\include\libraries\EnableInterrupt-master\utility</Value>
+      <Value>..\include\libraries\EEPROM\src</Value>
     </ListValues>
   </avrgcc.compiler.directories.IncludePaths>
   <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
@@ -187,6 +190,7 @@
       <Value>..\include\libraries\EnableInterrupt-master</Value>
       <Value>..\include\libraries\EnableInterrupt-master\examples\SimpleWithLibrary</Value>
       <Value>..\include\libraries\EnableInterrupt-master\utility</Value>
+      <Value>..\include\libraries\EEPROM\src</Value>
     </ListValues>
   </avrgcccpp.compiler.directories.IncludePaths>
   <avrgcccpp.compiler.optimization.level>Optimize for size (-Os)</avrgcccpp.compiler.optimization.level>
@@ -267,6 +271,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\core\WString.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\libraries\EEPROM\src\EEPROM.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\libraries\EnableInterrupt-master\EnableInterrupt.h">
@@ -410,20 +417,13 @@
     <Compile Include="src\core\WString.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\libraries\AccelStepper\AccelStepper.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\libraries\AccelStepper\MultiStepper.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\libraries\EnableInterrupt-master\examples\SimpleWithLibrary\Useless.cpp">
-      <SubType>compile</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="include\" />
     <Folder Include="include\core\" />
     <Folder Include="include\libraries\" />
+    <Folder Include="include\libraries\EEPROM\" />
+    <Folder Include="include\libraries\EEPROM\src\" />
     <Folder Include="include\libraries\EnableInterrupt-master\" />
     <Folder Include="include\libraries\EnableInterrupt-master\examples\" />
     <Folder Include="include\libraries\EnableInterrupt-master\examples\SimpleWithLibrary\" />
@@ -434,10 +434,6 @@
     <Folder Include="src\core\" />
     <Folder Include="src\core\PreprocessingAssembly\" />
     <Folder Include="src\libraries\" />
-    <Folder Include="src\libraries\AccelStepper\" />
-    <Folder Include="src\libraries\EnableInterrupt-master\" />
-    <Folder Include="src\libraries\EnableInterrupt-master\examples\" />
-    <Folder Include="src\libraries\EnableInterrupt-master\examples\SimpleWithLibrary\" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

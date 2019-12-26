@@ -10,7 +10,7 @@
 #include <Arduino.h>
 #include "Serial_Processing.h"
 #include "Globals.h"
-
+#include "EEPROM_Storage.h"
 char* ConcantenateCharandInt(char *s1, uint32_t number);
 char* ConcantenateCharandChar(char *s1, char *s2);
 
@@ -226,6 +226,9 @@ static int InnerOffset_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MA
 			}
 		}
 		INNER_TRAVERSE_OFFSET = strtol(arguments, NULL, 10);
+		eeprom_Storage.__EEPROM_Storage.Inner_Traverse_Offset = INNER_TRAVERSE_OFFSET;
+		eeprom_Storage.SaveStorage();
+		
 	}
 	else
 	{
@@ -249,6 +252,8 @@ static int SpoolWidth_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MAX
 			}
 		}
 		SPOOL_WIDTH = strtol(arguments, NULL, 10);
+		eeprom_Storage.__EEPROM_Storage.Spool_Width = SPOOL_WIDTH;
+		eeprom_Storage.SaveStorage();
 	}
 	else
 	{
@@ -315,6 +320,8 @@ static int StartPosition_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[
 		if (startposition <= 3)
 		{
 			START_POSITION = (startPosition_t)startposition;
+			eeprom_Storage.__EEPROM_Storage.Start_Position = START_POSITION;
+			eeprom_Storage.SaveStorage();
 		}
 	}
 	else

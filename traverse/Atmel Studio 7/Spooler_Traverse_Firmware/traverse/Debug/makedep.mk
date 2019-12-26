@@ -4,6 +4,8 @@
 
 ADC_Configuration.cpp
 
+EEPROM_Storage.cpp
+
 Math_Helpers.cpp
 
 Serial_Commands.cpp

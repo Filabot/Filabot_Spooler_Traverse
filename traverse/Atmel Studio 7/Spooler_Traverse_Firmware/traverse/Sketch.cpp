@@ -8,6 +8,8 @@
 #include "Serial_Commands.h"
 #include "Globals.h"
 #include "EnableInterrupt.h"
+#include "EEPROM.h"
+#include "EEPROM_Storage.h"
 //Beginning of Auto generated function prototypes by Atmel Studio
 ISR(TIMER1_OVF_vect );
 //ISR(TIMER1_COMPA_vect);
@@ -49,13 +51,13 @@ volatile long spoolTime = 0;
 
 
 int spoolUpdateInterval = 2000;
-int fullAutoUpdateInterval = 50;
+int fullAutoUpdateInterval = 25;
 long previousFullAutoTime = fullAutoUpdateInterval;
 long previousSpoolTime = spoolUpdateInterval;
 uint32_t serialTimerMillis = 1000; //Serial output scheduler delay time
 uint32_t serialTimerPreviousMillis = 0; //Current delay time
-volatile uint32_t fullAutoSpoolTicks = 0;
-volatile uint32_t previousSpoolTicks = 0;
+volatile int32_t fullAutoSpoolTicks = 0;
+volatile int32_t previousSpoolTicks = 0;
 static unsigned long last_millis = 0;
 unsigned long m = millis();
 
@@ -91,6 +93,7 @@ volatile bool potEnabled = false;
 
 Serial_Commands _Serial_Commands;
 Math_Helpers _Math_Helpers;
+EEPROM_Storage eeprom_Storage;
 
 
 ISR (TIMER1_OVF_vect)
@@ -131,19 +134,16 @@ void spoolPulse_Vector()
 	{ // ignore interrupt: probably a bounce problem
 	}
 	else
-	{ // do pushbutton stuff
-		
+	{ 
 		last_millis = m;
 
-
-
 		if (rpmSpoolTicks == 0)
-		{
 			spoolTime = millis();
-		}
+		
 		rpmSpoolTicks++;
 
-		if (tickFlag == false && rpmSpoolTicks >= 10){tickFlag = true;}
+		if (tickFlag == false && rpmSpoolTicks >= 10)
+			tickFlag = true;
 
 		fullAutoSpoolTicks++;
 
@@ -179,8 +179,7 @@ void setup() {
 	//home();
 	RUN_MODE = MODE_HOME;
 
-	
-	
+	eeprom_Storage.init();
 }
 
 void loop() {
@@ -219,35 +218,32 @@ void loop() {
 
 	if (RUN_MODE == MODE_RUN_FULL_AUTO)
 	{
-		if ((previousCaptureState != FILAMENT_CAPTURE) ||  (previousStartPosition != START_POSITION ))
+		
+		if (!FILAMENT_CAPTURE)
 		{
-			if (!FILAMENT_CAPTURE)
+			switch (START_POSITION)
 			{
-				switch (START_POSITION)
-				{
-					case BACK:
-						TRAVERSE_DIRECTION = DIRECTION_OUT;
-						MoveAbsolutePosition(MMToSteps(INNER_TRAVERSE_OFFSET ), MAX_RPM);
-						break;
-					case MIDDLE:
-						TRAVERSE_DIRECTION = DIRECTION_IN;
-						MoveAbsolutePosition(MMToSteps(abs((SPOOL_WIDTH - INNER_TRAVERSE_OFFSET) / 2)), MAX_RPM);
-						break;
-					case FRONT:
-						TRAVERSE_DIRECTION = DIRECTION_IN;
-						MoveAbsolutePosition(MMToSteps(INNER_TRAVERSE_OFFSET + SPOOL_WIDTH ), MAX_RPM);
-						break;
-					default:
-						break;
-				}
-				
+				case BACK:
+				TRAVERSE_DIRECTION = DIRECTION_OUT;
+				MoveAbsolutePosition(MMToSteps(INNER_TRAVERSE_OFFSET ), MAX_RPM);
+				break;
+				case MIDDLE:
+				TRAVERSE_DIRECTION = DIRECTION_IN;
+				MoveAbsolutePosition(MMToSteps(abs((SPOOL_WIDTH - INNER_TRAVERSE_OFFSET) / 2)), MAX_RPM);
+				break;
+				case FRONT:
+				TRAVERSE_DIRECTION = DIRECTION_IN;
+				MoveAbsolutePosition(MMToSteps(INNER_TRAVERSE_OFFSET + SPOOL_WIDTH ), MAX_RPM);
+				break;
+				default:
+				break;
 			}
+			previousSpoolTicks = 0; //prevent rollover
+			fullAutoSpoolTicks = 0; //prevent rollover
 			
-			previousCaptureState = FILAMENT_CAPTURE;
-			previousStartPosition = START_POSITION;
 		}
 
-		if (millis() > previousFullAutoTime + fullAutoUpdateInterval && FILAMENT_CAPTURE == true)
+		if (millis() > previousFullAutoTime + fullAutoUpdateInterval && FILAMENT_CAPTURE  == true)
 		{
 			if (!MOVE_TO_END)
 			{
@@ -261,29 +257,31 @@ void loop() {
 				else
 				{
 					uint32_t filamentStepsPerTick = (MMToSteps(FILAMENT_DIAMETER) / TONE_RING_DIVISIONS) / 2;
-					uint32_t spoolTickDelta = fullAutoSpoolTicks - previousSpoolTicks;
-
+					uint32_t spoolTickDelta = abs(fullAutoSpoolTicks - previousSpoolTicks);
+					uint32_t plannerStepTickDelta = abs(DESIRED_POSITION - STEPS);
+					int32_t mappedStepSpeed = map(plannerStepTickDelta, 0, 1600, 10, MAX_RPM);
+					
+					mappedStepSpeed > MAX_RPM ? MAX_RPM : mappedStepSpeed;
+					
 					if (TRAVERSE_DIRECTION == DIRECTION_OUT)
 					{
-						MoveRelativePosition((uint32_t)(spoolTickDelta * filamentStepsPerTick), SPOOLRPM * 1.75);
+						MoveRelativePosition((uint32_t)(spoolTickDelta * filamentStepsPerTick), mappedStepSpeed);
 					}
 					if (TRAVERSE_DIRECTION == DIRECTION_IN)
 					{
-						MoveRelativePosition((int32_t)-(spoolTickDelta * filamentStepsPerTick), SPOOLRPM * 1.75);
+						MoveRelativePosition((int32_t)-(spoolTickDelta * filamentStepsPerTick), mappedStepSpeed);
 					}
 
 					if (STEPS >= MMToSteps(INNER_TRAVERSE_OFFSET) + MMToSteps(SPOOL_WIDTH))
 					{
 						TRAVERSE_DIRECTION = DIRECTION_IN;
 					}
-					
 
 					previousSpoolTicks = fullAutoSpoolTicks;
 				}
 			}
 			else
 			{
-			
 				MoveAbsolutePosition(MMToSteps(SPOOL_WIDTH + INNER_TRAVERSE_OFFSET), HOME_SPEED);
 				while(STEPS != DESIRED_POSITION)
 				{
@@ -297,13 +295,14 @@ void loop() {
 		
 	}
 	
+
 	if (RUN_MODE == MODE_HOME)
 	{
 		Set_Traverse_RPM(HOME_SPEED);
 		home();
 	}
 
-	if (!FILAMENT_CAPTURE) { rpmSpoolTicks = 0;}
+	
 
 	if (tickFlag || millis() > previousSpoolTime + spoolUpdateInterval)
 	{
@@ -318,11 +317,11 @@ void loop() {
 		previousSpoolTime = millis();
 		//Serial.println(SPOOLRPM);
 	}
-	
+	//if (!FILAMENT_CAPTURE) { rpmSpoolTicks = 0;}
 
 	if (SPOOL_TICKS >= 4294967290) {SPOOL_TICKS = 0;} //prevent rollover
-	
-	
+
+
 }
 
 

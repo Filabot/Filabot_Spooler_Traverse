@@ -5,6 +5,7 @@
 * Author: Anthony
 */
 #include "Arduino.h"
+#include "EEPROM_Storage.h"
 
 #ifndef __GLOBALS_H__
 #define __GLOBALS_H__
@@ -25,6 +26,7 @@ extern volatile uint32_t FILAMENT_DIAMETER;
 extern volatile bool MOVE_TO_END;
 extern volatile bool FILAMENT_CAPTURE;
 extern volatile uint32_t SPOOL_TICKS;
+
 
 
 
@@ -54,9 +56,15 @@ typedef enum {
 
 } startPosition_t;
 
+typedef enum {
+	SPOOL_INNER_OFFSET_ADDRESS = 0,
+	SPOOL_WIDTH_ADDRESS = 1,
+	SPOOL_START_POSITION_ADDRESS = 2,
+};
+
 extern volatile traverseDirection_t TRAVERSE_DIRECTION;
 extern volatile startPosition_t START_POSITION;
 
-
+extern class EEPROM_Storage eeprom_Storage;
 
 #endif //__GLOBALS_H__

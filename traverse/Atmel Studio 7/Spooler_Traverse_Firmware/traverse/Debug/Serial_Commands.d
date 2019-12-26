@@ -35,7 +35,7 @@ Serial_Commands.d Serial_Commands.o: .././Serial_Commands.cpp \
  ..\\..\ArduinoCore\include\core/Arduino.h \
  ..\\..\ArduinoCore\include\variants\standard/pins_arduino.h \
  .././Device_Configuration.h .././HardwareTypes.h \
- .././Serial_Processing.h .././Globals.h
+ .././Serial_Processing.h .././Globals.h .././EEPROM_Storage.h
 
 .././Serial_Commands.h:
 
@@ -116,3 +116,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 .././Serial_Processing.h:
 
 .././Globals.h:
+
+.././EEPROM_Storage.h:
