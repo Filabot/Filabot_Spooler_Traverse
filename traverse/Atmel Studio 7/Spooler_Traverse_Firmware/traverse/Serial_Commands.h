@@ -21,6 +21,7 @@ static int NAME ##_cmd(int, char str[MAX_CMD_LENGTH], char arguments[MAX_CMD_LEN
 
 
 
+
 typedef struct
 {
   char *name;

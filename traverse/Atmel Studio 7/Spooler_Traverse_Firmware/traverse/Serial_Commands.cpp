@@ -88,7 +88,7 @@ static int GetSteps_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MAX_C
 static int TraverseRPM_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MAX_CMD_LENGTH])
 {
 
-	if (arguments != 0){
+	if (argc != 0){
 
 		for (int i=0; arguments[i]!= '\0'; i++)
 		{
@@ -148,7 +148,7 @@ static int Stop_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MAX_CMD_L
 
 static int RunMode_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MAX_CMD_LENGTH])
 {
-	if (arguments != 0)
+	if (argc != 0)
 	{
 		for (int i=0; arguments[i]!= '\0'; i++)
 		{
@@ -178,7 +178,7 @@ static int RunMode_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MAX_CM
 
 static int MoveAbsolute_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MAX_CMD_LENGTH])
 {
-	if (arguments != 0)
+	if (argc != 0)
 	{
 		for (int i=0; arguments[i]!= '\0'; i++)
 		{
@@ -214,7 +214,7 @@ static int SpoolRPM_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MAX_C
 
 static int InnerOffset_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MAX_CMD_LENGTH])
 {
-	if (arguments != 0)
+	if (argc != 0)
 	{
 		for (int i=0; arguments[i]!= '\0'; i++)
 		{
@@ -240,7 +240,7 @@ static int InnerOffset_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MA
 
 static int SpoolWidth_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MAX_CMD_LENGTH])
 {
-	if (arguments != 0)
+	if (argc != 0)
 	{
 		for (int i=0; arguments[i]!= '\0'; i++)
 		{
@@ -265,7 +265,7 @@ static int SpoolWidth_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MAX
 
 static int FilamentDiameter_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MAX_CMD_LENGTH])
 {
-	if (arguments != 0)
+	if (argc != 0)
 	{
 		for (int i=0; arguments[i]!= '\0'; i++)
 		{
@@ -305,7 +305,7 @@ static int MoveToEnd_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MAX_
 static int StartPosition_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MAX_CMD_LENGTH])
 {
 	
-	if (arguments != 0)
+	if (argc != 0)
 	{
 		for (int i=0; arguments[i]!= '\0'; i++)
 		{
@@ -335,7 +335,7 @@ static int StartPosition_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[
 static int FilamentCapture_cmd(int argc, char str[MAX_CMD_LENGTH], char arguments[MAX_CMD_LENGTH])
 {
 	
-	if (arguments != 0)
+	if (argc != 0)
 	{
 		for (int i=0; arguments[i]!= '\0'; i++)
 		{
@@ -392,23 +392,40 @@ char* ConcantenateCharandInt(char *s1, uint32_t number)
 void BuildSerialOutput(char *output, int hardwareType, char *command, char *value)
 {
 
-	//char *output = {0};
-	//output = new char[MAX_CMD_LENGTH + 1];
+	char buf[MAX_CMD_LENGTH] = {0};
+	byte checksum = 0;
 	
-	sprintf(output, "%d;%s;%s", hardwareType, command, value);
+	sprintf(buf, "%d;%s;%s;", hardwareType, command, value);
 
-	//return output;
+	for (int i = 0; i < MAX_CMD_LENGTH; i++)
+	{
+		checksum = checksum ^ buf[i]; //checksum, then add to command
+	}
+
+	sprintf(output, "%d;%s;%s;%d;", hardwareType, command, value);
+
 }
 
 void BuildSerialOutput(char *output, int hardwareType, char *command, uint32_t value)
 {
 
-	//char *output = {0};
-	//output = new char[MAX_CMD_LENGTH + 1];
+	char buf[MAX_CMD_LENGTH] = {0};
+	byte checksum = 0;
 	
-	sprintf(output, "%d;%s;%lu", hardwareType, command, value);
+	sprintf(buf, "%d;%s;%lu;", hardwareType, command, value);
 
-	//return output;
+	for (int i = 0; i < MAX_CMD_LENGTH; i++)
+	{
+		checksum = checksum ^ buf[i]; //checksum, then add to command
+	}
+	char *test = buf;
+
+	sprintf(output, "%d;%s;%lu;%d;", hardwareType, command, value, checksum);
+
+
+	
+	
+
 }
 
 

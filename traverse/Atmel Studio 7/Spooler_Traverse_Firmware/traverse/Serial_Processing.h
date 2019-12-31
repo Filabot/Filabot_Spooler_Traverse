@@ -48,6 +48,7 @@ class Serial_Processing
   char *hardwareType;                       //Char pointer used in string parsing
   char *cmd;                           //Char pointer used in string parsing
   char *arguments;          //Char pointer used in string parsing
+  char *checksum;
   
 
   //functions
@@ -74,5 +75,8 @@ class Serial_Processing
 
 
 }; //Serial_Processing
+
+char* strtoke(char *str, const char *delim);
+bool checksumPassed (char *serialChecksum, char *serialStringToCheck);
 
 #endif //__SERIAL_PROCESSING_H__

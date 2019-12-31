@@ -261,7 +261,9 @@ void loop() {
 					uint32_t plannerStepTickDelta = abs(DESIRED_POSITION - STEPS);
 					int32_t mappedStepSpeed = map(plannerStepTickDelta, 0, 1600, 10, MAX_RPM);
 					
-					mappedStepSpeed > MAX_RPM ? MAX_RPM : mappedStepSpeed;
+					
+					if (mappedStepSpeed > MAX_RPM)
+						mappedStepSpeed = MAX_RPM;
 					
 					if (TRAVERSE_DIRECTION == DIRECTION_OUT)
 					{
@@ -307,12 +309,12 @@ void loop() {
 	if (tickFlag || millis() > previousSpoolTime + spoolUpdateInterval)
 	{
 		uint32_t millisDelta = millis() - previousSpoolTime;
-		noInterrupts();
+		//noInterrupts();
 		if (tickFlag) { SPOOLRPM = 60000*rpmSpoolTicks/millisDelta/TONE_RING_DIVISIONS/2; } //2 since ISR is on rising and falling (CHANGE)
 		else { SPOOLRPM = 0; }
 		rpmSpoolTicks = 0; //isr will reset spool time
 		tickFlag = false;
-		interrupts();
+		//interrupts();
 		
 		previousSpoolTime = millis();
 		//Serial.println(SPOOLRPM);
