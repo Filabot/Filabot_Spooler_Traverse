@@ -42,8 +42,8 @@
 
  bool EEPROM_Storage::SaveStorage(void)
  {
-	 //EEPROM.put(4, __EEPROM_Storage);
-	 EEPROM.update(4, __EEPROM_Storage);
+	 EEPROM.put(4, __EEPROM_Storage);
+	 //EEPROM.update(4, __EEPROM_Storage);
 	 ReadStorage();
 	 return true;
  }

@@ -397,7 +397,7 @@ void BuildSerialOutput(char *output, int hardwareType, char *command, char *valu
 	
 	sprintf(buf, "%d;%s;%s;", hardwareType, command, value);
 
-	for (int i = 0; i < MAX_CMD_LENGTH; i++)
+	for (int i = 0; i < strlen(buf); i++)
 	{
 		checksum = checksum ^ buf[i]; //checksum, then add to command
 	}
